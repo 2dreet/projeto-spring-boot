@@ -22,5 +22,6 @@ public class CalculadoraController {
             @RequestParam(name = "a") double a,
             @RequestParam(name = "b") double b) {
         return a - b;
+
     }
 }
