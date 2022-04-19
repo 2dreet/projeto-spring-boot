@@ -1,4 +1,4 @@
-package br.com.projeto.spring.projetosb.models;
+package br.com.projeto.spring.projetosb.model.entities;
 
 public class Cliente {
 

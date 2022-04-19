@@ -1,6 +1,6 @@
 package br.com.projeto.spring.projetosb.controllers;
 
-import br.com.projeto.spring.projetosb.models.Cliente;
+import br.com.projeto.spring.projetosb.model.entities.Cliente;
 import org.springframework.web.bind.annotation.*;
 
 // define um controller em uma api Rest
