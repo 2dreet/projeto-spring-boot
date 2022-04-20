@@ -5,6 +5,9 @@ import br.com.projeto.spring.projetosb.model.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.Optional;
+
 // aqui definimos que a classe vai ser um controller
 @RestController
 // definimos a rota para o controller
@@ -20,10 +23,70 @@ public class ProdutoController {
     @PostMapping
     // @ResponseBody definimos que a model Produto que vai ser retornada
     // @ResquestParam definimos que vai ter um atributo nome no body da resquest
-    public @ResponseBody Produto novoProduto(@RequestParam String nome) {
-        Produto produto = new Produto(nome);
+    public @ResponseBody Produto novoProduto(
+            @RequestParam String nome,
+            @RequestParam Double preco,
+            @RequestParam Double desconto
+    ) {
+        Produto produto = new Produto(nome, preco, desconto);
         // aqui salvamos a model no banco
         produtoRepository.save(produto);
         return produto;
+    }
+
+    // aqui definimos que vai ser uma rota do tipo post
+    @PostMapping("/json")
+    // @ResponseBody definimos que a model Produto que vai ser retornada
+    // Aqui definimos que vai receber um produto
+    public @ResponseBody Produto novoProdutoJson(
+            @Valid Produto produto
+    ) {
+        // aqui salvamos a model no banco
+        produtoRepository.save(produto);
+        return produto;
+    }
+
+    // aqui definimos o retorno de todos os produtos
+    @GetMapping
+    public @ResponseBody Iterable<Produto> obterTodosProdutos() {
+        return produtoRepository.findAll();
+    }
+
+    // aqui definimos o retorno por id
+    @GetMapping("/unico")
+    public @ResponseBody Optional<Produto> obterProdutoPorId(@RequestParam(name = "id") Long id ) {
+        return produtoRepository.findById(id);
+    }
+
+    // aqui definimos o retorno por id por path
+    @GetMapping("/{id}")
+    public @ResponseBody Optional<Produto> obterProdutoPorIdPath(@PathVariable Long id ) {
+        return produtoRepository.findById(id);
+    }
+
+    // aqui definimos o metodo put para alteração
+    @PutMapping
+    public @ResponseBody Produto alterarProduto(@Valid Produto produto){
+        produtoRepository.save(produto);
+        return produto;
+    }
+
+    // aqui definimos 2 tipos de resquest para o mesma função
+    @RequestMapping(method = { RequestMethod.POST, RequestMethod.PUT}, path = "/enviar")
+    public @ResponseBody Produto receberProduto(@Valid Produto produto) {
+        produtoRepository.save(produto);
+        return produto;
+    }
+
+    // aqui definimos o delete com parametro
+    @DeleteMapping
+    public void removerProduto(@RequestParam(name = "id") Long id){
+        produtoRepository.deleteById(id);
+    }
+
+    // aqui definimos o delete com path parametro
+    @DeleteMapping(path = "/{id}")
+    public void removerProdutoPath(@PathVariable Long id){
+        produtoRepository.deleteById(id);
     }
 }
