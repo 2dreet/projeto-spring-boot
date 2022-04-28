@@ -3,6 +3,8 @@ package br.com.projeto.spring.projetosb.controllers;
 import br.com.projeto.spring.projetosb.model.entities.Produto;
 import br.com.projeto.spring.projetosb.model.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -51,6 +53,29 @@ public class ProdutoController {
     public @ResponseBody Iterable<Produto> obterTodosProdutos() {
         return produtoRepository.findAll();
     }
+    
+ // aqui definimos o retorno de todos os produtos
+    @GetMapping(path = "/pagina/{pagina}/{total}")
+    public @ResponseBody Iterable<Produto> obterProdutos( 
+    		@PathVariable int pagina,
+    		@PathVariable int total) {
+    	
+    	// aqui criamos a paginacao com Pageable
+    	Pageable page = PageRequest.of(pagina, total); 
+        return produtoRepository.findAll(page);
+    }
+    
+    @GetMapping(path = "/nome/{parteNome}")
+    public @ResponseBody Iterable<Produto> obterProdutoParteNome(@PathVariable String parteNome) {
+//    	return produtoRepository.findByNomeContainingIgnoreCase(parteNome);
+    	return produtoRepository.searchByNameLike(parteNome);
+    }
+    
+    @GetMapping(path = "/preco/{preco}")
+    public @ResponseBody Iterable<Produto> obterProdutoPrecoMenorQue(@PathVariable double preco) {
+//    	return produtoRepository.findByNomeContainingIgnoreCase(parteNome);
+    	return produtoRepository.searchProdutosPrecoMenorQue(preco);
+    }
 
     // aqui definimos o retorno por id
     @GetMapping("/unico")
@@ -89,4 +114,6 @@ public class ProdutoController {
     public void removerProdutoPath(@PathVariable Long id){
         produtoRepository.deleteById(id);
     }
+    
+    
 }
